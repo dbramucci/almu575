@@ -1,0 +1,48 @@
+name:                almu575
+version:             0.1.0.0
+github:              "dbramucci/almu575"
+license:             BSD3
+author:              "Daniel Bramucci"
+maintainer:          "dbramuccicode@gmail.com"
+copyright:           "Copyright (c) 2018 Daniel Bramucci"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:             DSL
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on Github at <https://github.com/ dbramucci/almu575#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+
+executables:
+  almu575-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - almu575
+
+tests:
+  almu575-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - almu575
