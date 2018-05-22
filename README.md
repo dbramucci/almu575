@@ -51,6 +51,7 @@ Additional labels may be specified
 Example files may be found in ...
 
 ## Math
+
 If you need to type a symbol in a math environment that you don't
 know. Try [Detexify](http://detexify.kirelabs.org/classify.html),
 you can draw the symbol and it will figure out the symbols that
