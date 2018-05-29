@@ -8,15 +8,18 @@ The name comes from **Al**gorithm **m**ark**u**p language for CIS **575**.
 ## Language Design
 
 The language is a designed around the idea of environments and
-symbols. An environment does something to the internal text, for
-example `\bold { text }` will make the `text` bold. A symbol is
-something that is intended to be replaced by a string. For example,
-`\assign` will become `⭠`.
+symbols.
+An environment does something to the internal text, for example `\bold [ text ]` will make the `text` bold.
+A symbol is something that is intended to be replaced by a string.
+For example, `\assign` will become `⭠`.
 
 ## Environments
 
-The following environments are available for use. They must be prefaced with a
+The following environments are available for use.
+They must be prefaced with a
 `\` to be used.
+The text that the interact with should be contained in a pair of square braces `[ ]` folowing the environment name.
+Whitespace between the environment name and braces will be ignored.
 
 * `title`: Renders the text as the document title. Limit 1 per document.
 * `author`: Renders the text as the author of the document.

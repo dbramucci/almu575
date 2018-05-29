@@ -21,11 +21,14 @@ description:         Please see the README on Github at <https://github.com/ dbr
 
 dependencies:
 - base >= 4.7 && < 5
-- blaze
-- trifecta
+- text >= 1.2.3.0 && < 1.3
+- trifecta >= 1.7.1.1 && < 1.8
 
 library:
   source-dirs: src
+  dependencies:
+  - text
+  - trifecta
 
 executables:
   almu575-exe:
