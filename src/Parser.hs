@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, MultiWayIf #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Parser (parseTerm) where
 
 
@@ -52,11 +52,11 @@ parseEnv = do
 
 -- | Parses the bodies of a Math environment
 parseMath :: Parser Term
-parseMath = Text <$> some (noneOf specialChars) -- TODO: Handle special chars correctly
+parseMath = Text . T.pack <$> some (noneOf specialChars) -- TODO: Handle special chars correctly
 
 -- | Parse a symbol, expecting an escape character to prefix it
 parseSymbol :: Parser Term
-parseSymbol = Symbol . SymbolName <$> some alphaNum
+parseSymbol = Symbol . SymbolName . T.pack <$> some alphaNum
 
 -- | Parses a special character, expecting an escape character first
 parseSpecial :: Parser Term
@@ -64,8 +64,8 @@ parseSpecial = do
     try (char escape)
     c <- oneOf specialChars
     if c `elem` specialChars
-    then return $ Text [escape]
+    then return . Text . T.pack $ [escape]
     else parseEnv <|> parseSymbol
 
 parseText :: Parser Term 
-parseText = Text <$> some (noneOf specialChars)
+parseText = Text . T.pack <$> some (noneOf specialChars)
