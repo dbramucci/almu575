@@ -26,7 +26,7 @@ dependencies:
 - blaze-markup >= 0.8.2.1 && < 0.9
 - blaze-html >= 0.9.0.1 && < 0.10
 - bytestring >= 0.10.8.2 && < 0.11
-
+- filepath >= 1.4.1.2 && < 1.5
 
 library:
   source-dirs: src
@@ -47,6 +47,9 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - almu575
+    - bytestring
+    - filepath
+    - trifecta
 
 tests:
   almu575-test:
