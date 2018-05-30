@@ -4,7 +4,7 @@ import qualified Data.Text as T
 
 -- | Symbols are chosen at runtime and thus cannot
 -- be expressed comprehensivly, thus they are stored as text
-newtype SymbolName = SymbolName T.Text
+newtype SymbolName = SymbolName String
 
 -- | Environments can be enumerated as they must be implemented
 -- by the compiler thus, they are explicitly listed as an ADT
@@ -22,4 +22,4 @@ data EnvType =
 data Term =
     Env EnvType [Term]
   | Symbol SymbolName
-  | Text T.Text
+  | Text String
