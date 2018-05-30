@@ -1,6 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Parser (parseTerm) where
-
+module Parser (parseTerm, parseFull) where
 
 import Control.Applicative
 import Term (EnvType(..), SymbolName(..), Term(..))
@@ -17,16 +16,20 @@ openBrace = '['
 closeBrace :: Char
 closeBrace = ']'
 
+parseFull :: String -> Result [Term]
+parseFull = parseString (some parseTerm <* eof) mempty
+
 specialChars :: [Char]
 specialChars = [escape, openBrace, closeBrace]
 
 parseTerm :: Parser Term
-parseTerm = parseSpecial <|> parseEnv
+parseTerm = parseSpecial <|> parseText 
 
--- | Parse Environment expecting an escape character to prefix it
+-- | Parse Environment expecting no escape character to prefix it
 parseEnv :: Parser Term
 parseEnv = do
     env <- try parseEnvType
+    whiteSpace
     char openBrace
     contains <- case env of
             Math -> (: []) <$> parseMath
@@ -38,15 +41,16 @@ parseEnv = do
         parseEnvType :: Parser EnvType
         parseEnvType = do
             name <- some alphaNum
-            return $ case name of
-                          "title"  -> Title
-                          "author" -> Author
-                          "date" -> Date
-                          "section" -> Section
-                          "subsection" -> Subsection
-                          "code" -> Code
-                          "displaymath" -> Displaymath
-                          "math" -> Math
+            case name of
+                          "title"  -> return Title
+                          "author" -> return Author
+                          "date" -> return Date
+                          "section" -> return Section
+                          "subsection" -> return Subsection
+                          "code" -> return Code
+                          "displaymath" -> return Displaymath
+                          "math" -> return Math
+                          e      -> fail $ "Unrecognized environment: \"" ++ e ++ "\""
 
 
 
@@ -54,18 +58,17 @@ parseEnv = do
 parseMath :: Parser Term
 parseMath = Text . T.pack <$> some (noneOf specialChars) -- TODO: Handle special chars correctly
 
--- | Parse a symbol, expecting an escape character to prefix it
+-- | Parse a symbol, without an escape character
 parseSymbol :: Parser Term
 parseSymbol = Symbol . SymbolName . T.pack <$> some alphaNum
 
--- | Parses a special character, expecting an escape character first
+-- | Parses expressions beginning with an escape character
 parseSpecial :: Parser Term
 parseSpecial = do
     try (char escape)
-    c <- oneOf specialChars
-    if c `elem` specialChars
-    then return . Text . T.pack $ [escape]
-    else parseEnv <|> parseSymbol
+    try (do c <- oneOf specialChars
+            return . Text . T.pack $ [c])
+      <|> parseEnv <|> parseSymbol
 
 parseText :: Parser Term 
 parseText = Text . T.pack <$> some (noneOf specialChars)
