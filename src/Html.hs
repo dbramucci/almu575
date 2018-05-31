@@ -20,12 +20,12 @@ center = Html5.div ! Att.style "text-align:center;"
 almuToHtml' :: Term -> Html 
 almuToHtml' (Text t) = toHtml t
 almuToHtml' (Symbol (SymbolName t)) = b $ toHtml t
-almuToHtml' (Env Title ts) = Html5.div . center . h1 $ mapM_ almuToHtml' ts
+almuToHtml' (Env Title ts) = center . h1 $ mapM_ almuToHtml' ts
 almuToHtml' (Env Author ts) = center . h2 $ mapM_ almuToHtml' ts
 almuToHtml' (Env Date ts) = center . h2 $ mapM_ almuToHtml' ts
 almuToHtml' (Env Section ts) = h2 $ mapM_ almuToHtml' ts
 almuToHtml' (Env Subsection ts) = h3 $ mapM_ almuToHtml' ts
-almuToHtml' (Env Code ts) = code $ mapM_ almuToHtml' ts
+almuToHtml' (Env Code ts) = pre $ mapM_ almuToHtml' ts
 almuToHtml' (Env Displaymath ts) = error "Sorry no math support yet"
 almuToHtml' (Env Math ts) = error "Sorry no math support yet"
 
