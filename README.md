@@ -43,7 +43,28 @@ Whitespace between the environment name and braces will be ignored.
 
 The following symbols are provided by default.
 
-...
+### Equalities
+
+* lt : <
+* le : ≤
+* gt : >
+* ge : ≥
+* neq : ≠
+
+### Logic
+
+* forall : ∀
+* exists : ∃
+* land : ∧
+
+### Sets
+
+* in : ∈
+* notin : ∉
+
+### Misc
+
+* assign : ⭠
 
 ## Symbol Extensions
 
