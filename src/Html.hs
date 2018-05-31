@@ -30,4 +30,8 @@ almuToHtml' (Env Displaymath ts) = error "Sorry no math support yet"
 almuToHtml' (Env Math ts) = error "Sorry no math support yet"
 
 almuToHtml :: [Term] -> B.ByteString
-almuToHtml ts = renderMarkup $ docTypeHtml .  Html5.div . body $ mapM_ almuToHtml' ts
+almuToHtml ts = renderMarkup $ do
+    docType
+    html $ do
+        Html5.head $ meta ! Att.charset "UTF-8"
+        body $ mapM_ almuToHtml' ts
