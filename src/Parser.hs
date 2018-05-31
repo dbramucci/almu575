@@ -23,7 +23,10 @@ specialChars :: [Char]
 specialChars = [escape, openBrace, closeBrace]
 
 parseTerm :: Parser Term
-parseTerm = parseSpecial <|> parseText 
+parseTerm = (do
+                try (char escape)
+                parseSpecial <|> parseEnv <|> parseSymbol
+            )  <|> parseText 
 
 -- | Parse Environment expecting no escape character to prefix it
 parseEnv :: Parser Term
@@ -62,13 +65,11 @@ parseMath = Text . T.pack <$> some (noneOf specialChars) -- TODO: Handle special
 parseSymbol :: Parser Term
 parseSymbol = Symbol . SymbolName . T.pack <$> some alphaNum
 
--- | Parses expressions beginning with an escape character
+-- | Parses special characters
 parseSpecial :: Parser Term
 parseSpecial = do
-    try (char escape)
-    try (do c <- oneOf specialChars
-            return . Text . T.pack $ [c])
-      <|> parseEnv <|> parseSymbol
+    c <- oneOf specialChars
+    return . Text . T.pack $ [c]
 
 parseText :: Parser Term 
 parseText = Text . T.pack <$> some (noneOf specialChars)
