@@ -5,6 +5,7 @@ import qualified Data.Text as T
 -- | Symbols are chosen at runtime and thus cannot
 -- be expressed comprehensivly, thus they are stored as text
 newtype SymbolName = SymbolName T.Text
+    deriving (Eq, Ord)
 
 -- | Environments can be enumerated as they must be implemented
 -- by the compiler thus, they are explicitly listed as an ADT
