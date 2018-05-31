@@ -2,6 +2,8 @@
 module Parser (parseTerm, parseFull) where
 
 import Control.Applicative
+import Control.Monad (when)
+
 import Term (EnvType(..), SymbolName(..), Term(..))
 import Text.Trifecta
 import qualified Data.Text as T
@@ -16,8 +18,8 @@ openBrace = '['
 closeBrace :: Char
 closeBrace = ']'
 
-parseFull :: String -> Result [Term]
-parseFull = parseString (some parseTerm <* eof) mempty
+parseFull :: String -> Result [Term] 
+parseFull = parseString (some parseTerm <* eof <?> "Full Almu575 File") mempty
 
 specialChars :: [Char]
 specialChars = [escape, openBrace, closeBrace]
@@ -25,13 +27,17 @@ specialChars = [escape, openBrace, closeBrace]
 parseTerm :: Parser Term
 parseTerm = (do
                 try (char escape)
-                parseSpecial <|> parseEnv <|> parseSymbol
-            )  <|> parseText 
+                (parseSpecial <|> parseEnv <|> parseSymbol) <?> "Special character, environment or symbol"
+            )  <|> (do
+                (Text t) <- parseText <?> "Text"
+                when (T.length t == 0) (fail "Found empty text segment") -- TODO: remove false positives at the end of a environment/file
+                return (Text t)
+                ) <?> "Term"
 
 -- | Parse Environment expecting no escape character to prefix it
 parseEnv :: Parser Term
 parseEnv = do
-    env <- try parseEnvType
+    env <- try (parseEnvType <?> "Environment name")
     whiteSpace
     char openBrace
     contains <- case env of
@@ -72,4 +78,4 @@ parseSpecial = do
     return . Text . T.pack $ [c]
 
 parseText :: Parser Term 
-parseText = Text . T.pack <$> some (noneOf specialChars)
+parseText = Text . T.pack <$> many (noneOf specialChars) <?> "Text, note that \"\\\", \"[\" and \"]\" must be escaped with a \"\\\""
